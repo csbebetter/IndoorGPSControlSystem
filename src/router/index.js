@@ -71,7 +71,7 @@ export const constantRoutes = [
       {
         path: 'tree',
         name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/table/index'),
         meta: { title: '全局扫描数据', icon: 'tree' }
       }
     ]

@@ -1,6 +1,9 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <div style="margin: 20px 0">
+      <el-button type="primary" plain>开始轮询</el-button>
+      <el-button type="success" plain>结束轮询</el-button>
+    </div>
   </div>
 </template>
 
@@ -22,6 +25,7 @@ export default {
   &-container {
     margin: 30px;
   }
+
   &-text {
     font-size: 30px;
     line-height: 46px;
