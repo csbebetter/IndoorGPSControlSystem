@@ -34,14 +34,14 @@
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Timestamp" width="200">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
+          <i class="el-icon-time"/>
           <span>{{ scope.row.Timestamp }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Time" width="200">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ parseTime(scope.row.Timestamp) }}</span> <!--Date.now-->
+          <i class="el-icon-time"/>
+          <span>{{ scope.row.Time }}</span> <!--Date.now-->
         </template>
       </el-table-column>
     </el-table>
@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import parseTime from '@/utils/index'
+import {parseTime} from '@/utils'
+
 export default {
   filters: {
     statusFilter(status) {
@@ -67,14 +68,22 @@ export default {
       listLoading: false
     }
   },
+  created() {
+    // 页面打开就建立连接，根据业务需要
+    this.initSocket()
+  },
+  destroyed() {
+    // 页面销毁关闭连接
+    this.webSocket.close()
+  },
 
   methods: {
     // 建立连接
     initSocket() {
       // 有参数的情况下：
-      //let url = `ws://${this.url}/${this.types}`
+      // let url = `ws://${this.url}/${this.types}`
       // 没有参数的情况:接口
-      let url1 = 'ws://192.168.0.110:8080'
+      const url1 = 'ws://192.168.0.110:8080'
       this.webSocket = new WebSocket(url1)
       this.webSocket.onopen = this.webSocketOnOpen
       this.webSocket.onclose = this.webSocketOnClose
@@ -83,50 +92,41 @@ export default {
     },
     // 建立连接成功后的状态
     webSocketOnOpen() {
-      console.log('websocket连接成功');
+      console.log('websocket连接成功')
     },
     // 获取到后台消息的事件，操作数据的代码在onmessage中书写
     webSocketOnMessage(res) {
       // res就是后台实时传过来的数据
-      var myObject = JSON.parse(res.data);
-      var showList = [];
-      myObject.TagInfo;
-      for (var i in myObject.TagInfo) {
-        console.log(myObject.TagInfo[i]);
-        var tempJson = {
-          "EPC": myObject.TagInfo[i].EPC,
-          "Port": myObject.TagInfo[i].Port[myObject.TagInfo[i].Port.length - 1],
-          "Phase": myObject.TagInfo[i].Phase[myObject.TagInfo[i].Phase.length - 1],
-          "RSSI": myObject.TagInfo[i].RSSI[myObject.TagInfo[i].RSSI.length - 1],
-          "Timestamp": myObject.TagInfo[i].TimeStamp[myObject.TagInfo[i].TimeStamp.length - 1]
+      const myObject = JSON.parse(res.data)
+      const showList = []
+      for (const i in myObject.TagInfo) {
+        // console.log(myObject.TagInfo[i]);
+        const tempJson = {
+          'EPC': myObject.TagInfo[i].EPC,
+          'Port': myObject.TagInfo[i].Port,
+          'Phase': myObject.TagInfo[i].Phase,
+          'RSSI': myObject.TagInfo[i].RSSI,
+          'Timestamp': myObject.TagInfo[i].TimeStamp,
+          'Time': parseTime(myObject.TagInfo[i].TimeStamp)
         }
-        showList.push(tempJson);
+        showList.push(tempJson)
+        this.webSocket.send('0X00')
       }
-      
-      this.list = showList;
 
+      this.list = showList
     },
     // 关闭连接
     webSocketOnClose() {
       this.webSocket.close()
-      console.log('websocket连接已关闭');
+      console.log('websocket连接已关闭')
     },
-    //连接失败的事件
+    // 连接失败的事件
     webSocketOnError(res) {
-      console.log('websocket连接失败');
+      console.log('websocket连接失败')
       // 打印失败的数据
-      console.log(res);
+      console.log(res)
     }
-  },
-  created() {
-    // 页面打开就建立连接，根据业务需要
-    this.initSocket()
-  },
-  destroyed() {
-    // 页面销毁关闭连接
-    this.webSocket.close()
   }
 }
 </script>
-
 

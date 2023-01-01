@@ -65,13 +65,13 @@ export const constantRoutes = [
       {
         path: 'table',
         name: 'Table',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/table/indexAll.vue'),
         meta: { title: 'RFID实时数据', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/table/indexRealTime.vue'),
         meta: { title: '全局扫描数据', icon: 'tree' }
       }
     ]
