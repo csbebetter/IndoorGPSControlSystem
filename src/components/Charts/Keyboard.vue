@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" :class="className" :style="{height:height,width:width}" />
+  <div :id="id" :class="className" :style="{height:height,width:width}"/>
 </template>
 
 <script>
@@ -28,11 +28,15 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      xList: [],
+      phaseList: [],
+      RSSIList: []
     }
   },
   mounted() {
-    this.initChart()
+    this.initSocket('ws://192.168.0.110:8080')
+    // this.initChart()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -41,18 +45,17 @@ export default {
     this.chart.dispose()
     this.chart = null
   },
+  destroyed() {
+    // 页面销毁关闭连接
+    this.webSocket.close()
+  },
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
 
-      const xAxisData = []
-      const data = []
-      const data2 = []
-      for (let i = 0; i < 50; i++) {
-        xAxisData.push(i)
-        data.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5)
-        data2.push((Math.sin(i / 5) * (i / 5 + 10) + i / 6) * 3)
-      }
+      const xAxisData = this.xList
+      const phaseData = this.phaseList
+      // const rssiData = this.RSSIList
       this.chart.setOption({
         backgroundColor: '#08263a',
         grid: {
@@ -60,10 +63,7 @@ export default {
           right: '5%'
         },
         xAxis: [{
-          show: false,
-          data: xAxisData
-        }, {
-          show: false,
+          show: true,
           data: xAxisData
         }],
         visualMap: {
@@ -75,71 +75,83 @@ export default {
             color: ['#4a657a', '#308e92', '#b1cfa5', '#f5d69f', '#f5898b', '#ef5055']
           }
         },
-        yAxis: {
-          axisLine: {
-            show: false
-          },
-          axisLabel: {
-            textStyle: {
-              color: '#4a657a'
+        yAxis: [
+          {
+            max: 7, // 设置最大值
+            min: 0, // 最小值
+            // splitNumber: 11, // 11个刻度线，也就是10等分
+            // nameTextStyle: {
+            //   color: '#fff',
+            //   padding: [0, 0, 0, 0]
+            // },
+            axisLine: {
+              show: true
+            },
+            axisLabel: {
+              textStyle: {
+                color: '#4a657a'
+              }
+            },
+            splitLine: {
+              show: true,
+              lineStyle: {
+                color: '#08263f'
+              }
+            },
+            axisTick: {
+              show: true
             }
-          },
-          splitLine: {
-            show: true,
+          }],
+        series: [
+          // {
+          //   name: 'back',
+          //   type: 'bar',
+          //   data: rssiData,
+          //   z: 1,
+          //   itemStyle: {
+          //     normal: {
+          //       opacity: 0.4,
+          //       barBorderRadius: 5,
+          //       shadowBlur: 3,
+          //       shadowColor: '#111'
+          //     }
+          //   }
+          // },
+          {
+            name: 'Simulate Shadow',
+            type: 'line',
+            data: phaseData,
+            z: 2,
+            showSymbol: true,
+            animationDelay: 0,
+            animationEasing: 'linear',
+            animationDuration: 1200,
             lineStyle: {
-              color: '#08263f'
-            }
-          },
-          axisTick: {
-            show: false
-          }
-        },
-        series: [{
-          name: 'back',
-          type: 'bar',
-          data: data2,
-          z: 1,
-          itemStyle: {
-            normal: {
-              opacity: 0.4,
-              barBorderRadius: 5,
-              shadowBlur: 3,
-              shadowColor: '#111'
+              normal: {
+                color: 'transparent'
+              }
+            },
+            areaStyle: {
+              normal: {
+                color: '#08263a',
+                shadowBlur: 50,
+                shadowColor: '#000'
+              }
             }
           }
-        }, {
-          name: 'Simulate Shadow',
-          type: 'line',
-          data,
-          z: 2,
-          showSymbol: false,
-          animationDelay: 0,
-          animationEasing: 'linear',
-          animationDuration: 1200,
-          lineStyle: {
-            normal: {
-              color: 'transparent'
-            }
-          },
-          areaStyle: {
-            normal: {
-              color: '#08263a',
-              shadowBlur: 50,
-              shadowColor: '#000'
-            }
-          }
-        }, {
-          name: 'front',
-          type: 'bar',
-          data,
-          xAxisIndex: 1,
-          z: 3,
-          itemStyle: {
-            normal: {
-              barBorderRadius: 5
-            }
-          }
-        }],
+          // {
+          //   name: 'front',
+          //   type: 'bar',
+          //   data: phaseData,
+          //   xAxisIndex: 1,
+          //   z: 3,
+          //   itemStyle: {
+          //     normal: {
+          //       barBorderRadius: 5
+          //     }
+          //   }
+          // }
+        ],
         animationEasing: 'elasticOut',
         animationEasingUpdate: 'elasticOut',
         animationDelay(idx) {
@@ -149,6 +161,49 @@ export default {
           return idx * 20
         }
       })
+    },
+    // 建立连接
+    initSocket(url1) {
+      // 有参数的情况下：
+      // let url = `ws://${this.url}/${this.types}`
+      // 没有参数的情况:接口
+      // const url1 = 'ws://192.168.0.110:8080'
+      this.webSocket = new WebSocket(url1)
+      this.webSocket.onopen = this.webSocketOnOpen
+      this.webSocket.onclose = this.webSocketOnClose
+      this.webSocket.onmessage = this.webSocketOnMessage
+      this.webSocket.onerror = this.webSocketOnError
+    },
+    // 建立连接成功后的状态
+    webSocketOnOpen() {
+      console.log('websocket连接成功')
+    },
+    // 获取到后台消息的事件，操作数据的代码在onmessage中书写
+    webSocketOnMessage(res) {
+      this.dataReceiveHandle(res)
+      this.initChart()
+    },
+    // 关闭连接
+    webSocketOnClose() {
+      this.webSocket.close()
+      console.log('websocket连接已关闭')
+    },
+    // 连接失败的事件
+    webSocketOnError(res) {
+      console.log('websocket连接失败')
+      // 打印失败的数据
+      console.log(res)
+    },
+    dataReceiveHandle(resData) {
+      const myObject = JSON.parse(resData.data)
+      if (this.xList.length >= 50) {
+        this.xList.shift()
+        this.phaseList.shift()
+        this.RSSIList.shift()
+      }
+      this.xList.push(myObject.TagInfo[0].TimeStamp)
+      this.phaseList.push(myObject.TagInfo[0].Phase)
+      this.RSSIList.push(myObject.TagInfo[0].RSSI)
     }
   }
 }
