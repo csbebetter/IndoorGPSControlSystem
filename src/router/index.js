@@ -39,7 +39,7 @@ export const constantRoutes = [
 
   {
     path: '/404',
-    component: () => import('@/views/404'),
+    component: () => import('@/views/error-page/404.vue'),
     hidden: true
   },
 
@@ -64,19 +64,42 @@ export const constantRoutes = [
     children: [
       {
         path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/indexAll.vue'),
-        meta: { title: 'RFID实时数据', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
+        name: 'table',
         component: () => import('@/views/table/indexRealTime.vue'),
-        meta: { title: '全局扫描数据', icon: 'tree' }
+        meta: { title: 'RFID实时数据', icon: 'table', affix: true}
       }
     ]
   },
-
+  {
+    path: '/charts',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'Charts',
+    meta: {
+      title: 'RFID数据图表',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'keyboard',
+        component: () => import('@/views/charts/keyboard'),
+        name: 'KeyboardChart',
+        meta: { title: 'Keyboard Chart', noCache: true, affix: true }
+      },
+      {
+        path: 'line',
+        component: () => import('@/views/charts/line'),
+        name: 'LineChart',
+        meta: { title: 'Line Chart', noCache: true, affix: true }
+      },
+      {
+        path: 'mix-chart',
+        component: () => import('@/views/charts/mix-chart'),
+        name: 'MixChart',
+        meta: { title: 'Mix Chart', noCache: true, affix: true }
+      }
+    ]
+  },
   {
     path: '/form',
     component: Layout,
@@ -89,7 +112,6 @@ export const constantRoutes = [
       }
     ]
   },
-
   {
     path: 'external-link',
     component: Layout,

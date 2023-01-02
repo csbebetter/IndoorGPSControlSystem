@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from './components'
+
+import {Navbar, Sidebar, AppMain} from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
@@ -20,7 +21,7 @@ export default {
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
   },
   mixins: [ResizeMixin],
   computed: {
@@ -29,6 +30,9 @@ export default {
     },
     device() {
       return this.$store.state.app.device
+    },
+    needTagsView() {
+      return this.$store.state.settings.tagsView
     },
     fixedHeader() {
       return this.$store.state.settings.fixedHeader

@@ -6,13 +6,21 @@
       <el-button type="success" plain @click="webSocketOnClose">结束轮询</el-button>
     </div>
 
-    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      :header-cell-style="{background:'#2f6199','font-size':'14px','font-weight':'550',color:'#FFFFFF',height:'35px'}"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
       <el-table-column align="center" label="ID" width="80">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="EPC">
+      <el-table-column align="center" label="EPC">
         <template slot-scope="scope">
           {{ scope.row.EPC }}
         </template>
@@ -22,9 +30,9 @@
           <span>{{ scope.row.Port }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Phase" width="110" align="center">
+      <el-table-column label="Phase" width="130" align="center">
         <template slot-scope="scope">
-          {{ scope.row.Phase }}
+          {{ scope.row.Phase.toFixed(10) }}
         </template>
       </el-table-column>
       <el-table-column label="RSSI" width="110" align="center">
@@ -110,7 +118,7 @@ export default {
           'Time': parseTime(myObject.TagInfo[i].TimeStamp)
         }
         showList.push(tempJson)
-        this.webSocket.send('0X00')
+        // this.webSocket.send('0X00')
       }
 
       this.list = showList

@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
+<!--    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />-->
+    <hamburger :is-active="sidebar.opened" class="hamburger-container"/>
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
@@ -64,7 +64,7 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: #ffffff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
 
   .hamburger-container {
