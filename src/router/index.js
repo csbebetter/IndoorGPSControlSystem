@@ -84,19 +84,25 @@ export const constantRoutes = [
         path: 'keyboard',
         component: () => import('@/views/charts/keyboard'),
         name: 'KeyboardChart',
-        meta: { title: 'Keyboard Chart', noCache: true, affix: true }
+        meta: { title: '相位折线图', noCache: true, affix: true }
       },
       {
         path: 'line',
         component: () => import('@/views/charts/line'),
         name: 'LineChart',
-        meta: { title: 'Line Chart', noCache: true, affix: true }
-      },
+        meta: { title: '相位散点图', noCache: true, affix: true }
+      }
+    ]
+  },
+  {
+    path: '/three',
+    component: Layout,
+    children: [
       {
-        path: 'mix-chart',
-        component: () => import('@/views/charts/mix-chart'),
-        name: 'MixChart',
-        meta: { title: 'Mix Chart', noCache: true, affix: true }
+        path: 'index',
+        name: 'testThree',
+        component: () => import('@/views/three/testScene'),
+        meta: { title: '3D展示', icon: 'form' }
       }
     ]
   },

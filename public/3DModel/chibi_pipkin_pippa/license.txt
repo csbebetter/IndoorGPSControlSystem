@@ -1,0 +1,11 @@
+Model Information:
+* title:	Chibi Pipkin Pippa
+* source:	https://sketchfab.com/3d-models/chibi-pipkin-pippa-392d6bc2d69540e0a49d62e0efc7bfc5
+* author:	R24 (https://sketchfab.com/rr12366)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Chibi Pipkin Pippa" (https://sketchfab.com/3d-models/chibi-pipkin-pippa-392d6bc2d69540e0a49d62e0efc7bfc5) by R24 (https://sketchfab.com/rr12366) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

@@ -103,20 +103,6 @@ export default {
             }
           }],
         series: [
-          // {
-          //   name: 'back',
-          //   type: 'bar',
-          //   data: rssiData,
-          //   z: 1,
-          //   itemStyle: {
-          //     normal: {
-          //       opacity: 0.4,
-          //       barBorderRadius: 5,
-          //       shadowBlur: 3,
-          //       shadowColor: '#111'
-          //     }
-          //   }
-          // },
           {
             name: 'Simulate Shadow',
             type: 'line',
@@ -139,18 +125,6 @@ export default {
               }
             }
           }
-          // {
-          //   name: 'front',
-          //   type: 'bar',
-          //   data: phaseData,
-          //   xAxisIndex: 1,
-          //   z: 3,
-          //   itemStyle: {
-          //     normal: {
-          //       barBorderRadius: 5
-          //     }
-          //   }
-          // }
         ],
         animationEasing: 'elasticOut',
         animationEasingUpdate: 'elasticOut',
@@ -199,11 +173,19 @@ export default {
       if (this.xList.length >= 50) {
         this.xList.shift()
         this.phaseList.shift()
-        this.RSSIList.shift()
+        // this.RSSIList.shift()
       }
-      this.xList.push(myObject.TagInfo[0].TimeStamp)
-      this.phaseList.push(myObject.TagInfo[0].Phase)
-      this.RSSIList.push(myObject.TagInfo[0].RSSI)
+      if (this.xList.length === 0) {
+        this.xList.push(myObject.TagInfo[0].TimeStamp)
+        this.phaseList.push(myObject.TagInfo[0].Phase)
+        // this.RSSIList.push(myObject.TagInfo[0].RSSI)
+      } else {
+        if (this.xList[this.xList.length - 1][0] !== myObject.TagInfo[0].TimeStamp) {
+          this.xList.push(myObject.TagInfo[0].TimeStamp)
+          this.phaseList.push(myObject.TagInfo[0].Phase)
+          // this.RSSIList.push(myObject.TagInfo[0].RSSI)
+        }
+      }
     }
   }
 }
